@@ -1,0 +1,607 @@
+\documentclass[12pt, a4paper]{article}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{float}
+
+% ── Colours ───────────────────────────────────────────────────────────────────
+\definecolor{primaryblue}{RGB}{31, 78, 121}
+\definecolor{codegray}{RGB}{245, 245, 245}
+\definecolor{codered}{RGB}{180, 50, 50}
+
+% ── Section Formatting ────────────────────────────────────────────────────────
+\titleformat{\section}{\Large\bfseries\color{primaryblue}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries\color{primaryblue}}{}{0em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries}{}{0em}{}
+
+% ── Header / Footer ───────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textcolor{primaryblue}{\small Titanic EDA Report}}
+\lhead{\textcolor{primaryblue}{\small Data Analysis}}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Code Listing Style ────────────────────────────────────────────────────────
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{codered},
+  commentstyle=\color{gray},
+  stringstyle=\color{primaryblue},
+  language=Python,
+  showstringspaces=false,
+  tabsize=4,
+  captionpos=b
+}
+
+% ── Hyperlink Style ───────────────────────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  linkcolor=primaryblue,
+  urlcolor=primaryblue
+}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Title Page ────────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\Huge\bfseries\color{primaryblue} Titanic Dataset\\[0.4em]
+  Exploratory Data Analysis Report}\\[1.5cm]
+  {\large ML Assignment 3 --- Class Report}\\[0.5cm]
+  {\large\today}\\[2.5cm]
+
+  \begin{abstract}
+    \noindent
+    This report presents a comprehensive exploratory data analysis (EDA) of
+    the Titanic passenger dataset. The analysis covers dataset structure,
+    data integrity, missing value treatment, descriptive statistics, and
+    a series of visualisations aimed at uncovering patterns related to
+    passenger survival. Based on the findings, the most informative features
+    are identified and a machine learning model suitable for predicting
+    survival outcomes is proposed.
+  \end{abstract}
+
+  \vspace{2cm}
+
+  \begin{tabular}{ll}
+    \textbf{Prepared by} & Kyal Sin Lin Lett \\
+    \textbf{Student ID}  & 126112 \\
+    \textbf{Program}     & Master's in Computer Science \\
+  \end{tabular}
+
+  \vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Dataset Detail}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\subsection{Source}
+
+The Titanic dataset is one of the most widely used benchmark datasets in
+machine learning and data science education. It is publicly available from
+multiple sources, most notably:
+
+\begin{itemize}
+  \item \textbf{Kaggle} --- \href{https://www.kaggle.com/c/titanic}{kaggle.com/c/titanic},
+        the original competition page providing \texttt{train.csv} and
+        \texttt{test.csv} \cite{kaggle_titanic}.
+  \item \textbf{Seaborn} --- accessible programmatically via
+        \texttt{sns.load\_dataset("titanic")}, which provides a pre-cleaned
+        version of the training split sourced from the
+        \href{https://github.com/mwaskom/seaborn-data}{seaborn-data}
+        GitHub repository \cite{seaborn}.
+\end{itemize}
+
+For this analysis, the dataset was loaded using the Seaborn built-in loader.
+This version contains \textbf{891 passengers} and \textbf{15 columns}.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Dataset Overview}
+
+The Titanic dataset contains information about passengers aboard the RMS
+Titanic, which sank on 15 April 1912 after colliding with an iceberg during
+its maiden voyage from Southampton to New York City. Of the estimated 2,224
+passengers and crew, more than 1,500 died, making it one of the deadliest
+peacetime maritime disasters in history \cite{encyclopedia_titanic}.
+
+The dataset records demographic and ticketing attributes for 891 passengers,
+along with a binary label indicating whether each passenger survived
+(\texttt{survived = 1}) or did not (\texttt{survived = 0}). This is a
+\textbf{supervised binary classification} problem.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Data Structure \& Integrity}
+
+\subsubsection{Code Evidence: \texttt{df.info()}}
+
+The following output was produced by calling \texttt{df.info()} on the loaded
+dataframe. It reveals the column names, non-null counts, and inferred data types.
+
+\begin{lstlisting}[caption={\texttt{df.info()} output}]
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 891 entries, 0 to 890
+Data columns (total 15 columns):
+ #   Column       Non-Null Count  Dtype
+---  ------       --------------  -----
+ 0   survived     891 non-null    int64
+ 1   pclass       891 non-null    int64
+ 2   sex          891 non-null    object
+ 3   age          714 non-null    float64
+ 4   sibsp        891 non-null    int64
+ 5   parch        891 non-null    int64
+ 6   fare         891 non-null    float64
+ 7   embarked     889 non-null    object
+ 8   class        891 non-null    object
+ 9   who          891 non-null    object
+ 10  adult_male   891 non-null    bool
+ 11  deck         203 non-null    object
+ 12  embark_town  889 non-null    object
+ 13  alive        891 non-null    object
+ 14  alone        891 non-null    bool
+dtypes: bool(2), float64(2), int64(4), object(7)
+memory usage: 92.4+ KB
+\end{lstlisting}
+
+\subsubsection{Code Evidence: \texttt{df.head()}}
+
+\begin{lstlisting}[caption={\texttt{df.head()} output (core columns shown)}]
+   survived  pclass     sex   age  sibsp  parch     fare embarked
+0         0       3    male  22.0      1      0   7.2500        S
+1         1       1  female  38.0      1      0  71.2833        C
+2         1       3  female  26.0      0      0   7.9250        S
+3         1       1  female  35.0      1      0  53.1000        S
+4         0       3    male  35.0      0      0   8.0500        S
+\end{lstlisting}
+
+\subsubsection{Null / Missing Values}
+
+Table~\ref{tab:nulls} summarises the missing values across all columns.
+Three columns contain nulls: \texttt{age}, \texttt{embarked}, and \texttt{deck}.
+
+\begin{table}[H]
+  \centering
+  \caption{Missing value summary}
+  \label{tab:nulls}
+  \begin{tabular}{lrr}
+    \toprule
+    \textbf{Column} & \textbf{Null Count} & \textbf{Null \%} \\
+    \midrule
+    age          & 177 & 19.87\% \\
+    embarked     & 2   & 0.22\%  \\
+    deck         & 688 & 77.22\% \\
+    embark\_town & 2   & 0.22\%  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Interpretation:}
+\begin{itemize}
+  \item \texttt{age} is missing for roughly 1 in 5 passengers. This is
+        significant and must be addressed before modelling. Common strategies
+        include median imputation or model-based imputation.
+  \item \texttt{embarked} is missing for only 2 rows and can be imputed
+        with the mode (``S'' for Southampton, the most common port).
+  \item \texttt{deck} is missing for over 77\% of passengers and carries
+        too little information to be reliably used. It will be dropped prior
+        to modelling.
+\end{itemize}
+
+\subsubsection{Data Types}
+
+The dataset contains a mix of types:
+\begin{itemize}
+  \item \textbf{Integer (\texttt{int64}):} \texttt{survived}, \texttt{pclass},
+        \texttt{sibsp}, \texttt{parch} --- discrete count and ordinal variables.
+  \item \textbf{Float (\texttt{float64}):} \texttt{age}, \texttt{fare} ---
+        continuous numerical variables.
+  \item \textbf{Object (string):} \texttt{sex}, \texttt{embarked},
+        \texttt{class}, \texttt{who}, \texttt{deck}, \texttt{embark\_town},
+        \texttt{alive} --- categorical variables requiring encoding before
+        modelling.
+  \item \textbf{Boolean:} \texttt{adult\_male}, \texttt{alone} ---
+        binary flags derived from other columns.
+\end{itemize}
+
+Note that \texttt{class}, \texttt{alive}, \texttt{who}, \texttt{adult\_male},
+\texttt{alone}, and \texttt{embark\_town} are largely redundant columns
+added by the Seaborn version, as they duplicate information already present
+in \texttt{pclass}, \texttt{survived}, and \texttt{sex}. These will be
+dropped to avoid multicollinearity.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Data Dictionary}
+
+\begin{longtable}{>{\bfseries}p{3.2cm} p{2.2cm} p{7.8cm}}
+  \toprule
+  \textbf{Column} & \textbf{Type} & \textbf{Description} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Column} & \textbf{Type} & \textbf{Description} \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+
+  survived     & int (0/1)  & Target variable. 1 = survived, 0 = did not survive. \\[4pt]
+  pclass       & int (1--3) & Ticket class as a proxy for socio-economic status.
+                              1 = First (upper), 2 = Second (middle), 3 = Third (lower). \\[4pt]
+  sex          & string     & Passenger gender: \texttt{male} or \texttt{female}. \\[4pt]
+  age          & float      & Age in years. Fractional for infants (e.g., 0.42). \\[4pt]
+  sibsp        & int        & Number of siblings or spouses aboard the Titanic. \\[4pt]
+  parch        & int        & Number of parents or children aboard the Titanic. \\[4pt]
+  fare         & float      & Passenger fare paid in British pounds (\pounds). \\[4pt]
+  embarked     & string     & Port of embarkation:
+                              C = Cherbourg, Q = Queenstown, S = Southampton. \\[4pt]
+  class        & string     & Text equivalent of \texttt{pclass}
+                              (First / Second / Third). Redundant. \\[4pt]
+  who          & string     & Passenger category: \texttt{man}, \texttt{woman},
+                              or \texttt{child}. Derived column. \\[4pt]
+  adult\_male  & bool       & True if the passenger is an adult male. Derived. \\[4pt]
+  deck         & string     & Cabin deck letter (A through G). Highly sparse (77\% missing). \\[4pt]
+  embark\_town & string     & Full embarkation town name. Redundant with \texttt{embarked}. \\[4pt]
+  alive        & string     & Text equivalent of \texttt{survived}
+                              (\texttt{yes} / \texttt{no}). Redundant. \\[4pt]
+  alone        & bool       & True if the passenger had no relatives aboard. Derived. \\
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Exploratory Data Analysis}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\subsection{Descriptive Statistics}
+
+Table~\ref{tab:descstats} presents the key descriptive statistics for the
+primary numerical features.
+
+\begin{table}[H]
+  \centering
+  \caption{Descriptive statistics for numerical features}
+  \label{tab:descstats}
+  \begin{tabular}{lrrrrrrr}
+    \toprule
+    & \textbf{count} & \textbf{mean} & \textbf{std} & \textbf{min}
+    & \textbf{25\%} & \textbf{75\%} & \textbf{max} \\
+    \midrule
+    survived & 891 & 0.3838 & 0.4866 & 0    & 0     & 1     & 1      \\
+    pclass   & 891 & 2.3086 & 0.8361 & 1    & 2     & 3     & 3      \\
+    age      & 714 & 29.70  & 14.53  & 0.42 & 20.12 & 38.00 & 80.00  \\
+    sibsp    & 891 & 0.5230 & 1.1027 & 0    & 0     & 1     & 8      \\
+    parch    & 891 & 0.3816 & 0.8061 & 0    & 0     & 0     & 6      \\
+    fare     & 891 & 32.20  & 49.69  & 0.00 & 7.91  & 31.00 & 512.33 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The overall survival rate is \textbf{38.38\%}, confirming a class imbalance
+in the target variable. The fare column has a very high standard deviation
+relative to its mean, indicating strong right skew and the presence of extreme
+outliers. Passengers in first class paid dramatically more than those in
+third class.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Chart 1 --- Survival Count}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{assets/ml_ass3_class_report/chart1_survival_count.png}
+  \caption{Overall survival count of Titanic passengers.}
+  \label{fig:survival_count}
+\end{figure}
+
+\textbf{Why this chart?} A simple bar chart is the most direct way to
+visualise the distribution of the binary target variable and immediately
+reveal any class imbalance.
+
+\textbf{What it tells us:} Out of 891 passengers, 549 (61.6\%) did not
+survive while 342 (38.4\%) survived. The dataset is moderately imbalanced.
+This matters for modelling because a naive classifier that always predicts
+``did not survive'' would still achieve 61.6\% accuracy, which is a
+misleading baseline. Evaluation metrics such as precision, recall, F1-score,
+and ROC-AUC will therefore be more informative than raw accuracy.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Chart 2 --- Age Distribution}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{assets/ml_ass3_class_report/chart2_age_distribution.png}
+  \caption{Histogram of passenger ages with mean and median marked.}
+  \label{fig:age_dist}
+\end{figure}
+
+\textbf{Why this chart?} A histogram reveals the shape of the age
+distribution, the presence of skew, and helps inform an imputation strategy
+for the 177 missing values.
+
+\textbf{What it tells us:} The distribution is roughly unimodal and slightly
+right-skewed. The median is \textbf{28.0 years} and the mean is
+\textbf{29.7 years}. The two values are close together, indicating the skew
+is mild. There is a notable spike in the youngest age bin representing infants
+and toddlers, and the bulk of passengers fall between 20 and 40 years old.
+Given the mild skew, \textbf{median imputation} is a reasonable strategy for
+filling missing age values without distorting the overall distribution.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Chart 3 --- Survival Rate by Sex}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{assets/ml_ass3_class_report/chart3_survival_by_sex.png}
+  \caption{Survival rate broken down by passenger sex.}
+  \label{fig:survival_sex}
+\end{figure}
+
+\textbf{Why this chart?} Gender is hypothesised to be one of the strongest
+predictors of survival due to the ``women and children first'' evacuation
+protocol. A bar chart cleanly contrasts the survival rates of the two
+categories.
+
+\textbf{What it tells us:} Female passengers survived at a rate of
+\textbf{74.2\%}, compared to just \textbf{18.9\%} for male passengers.
+This is the single largest disparity observed across any feature in the
+dataset. The sex feature will almost certainly rank as the most important
+predictor in any classification model trained on this data.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Chart 4 --- Survival Rate by Passenger Class}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{assets/ml_ass3_class_report/chart4_survival_by_pclass.png}
+  \caption{Survival rate by passenger class (1st, 2nd, 3rd).}
+  \label{fig:survival_pclass}
+\end{figure}
+
+\textbf{Why this chart?} Passenger class is a proxy for socio-economic
+status and reflects both cabin location on the ship and access to lifeboats.
+A bar chart of survival rates per class makes the gradient immediately visible.
+
+\textbf{What it tells us:} First-class passengers survived at \textbf{63.0\%},
+second-class at \textbf{47.3\%}, and third-class at only \textbf{24.2\%}.
+There is a clear monotonic decrease in survival rate as class decreases.
+This strongly suggests that socio-economic status and physical proximity to
+the upper decks (where lifeboats were positioned) played a decisive role in
+survival outcomes. The \texttt{pclass} feature will be a critical input to
+the predictive model.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Chart 5 --- Fare Distribution by Class (Boxplot)}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\textwidth]{assets/ml_ass3_class_report/chart5_fare_boxplot.png}
+  \caption{Boxplot of fare paid, grouped by passenger class.}
+  \label{fig:fare_boxplot}
+\end{figure}
+
+\textbf{Why this chart?} A boxplot is the standard tool for inspecting
+the spread, median, quartiles, and outliers of a continuous variable across
+groups simultaneously.
+
+\textbf{What it tells us:} First-class fares are dramatically higher and
+more variable than those in second or third class. The interquartile range
+for first class spans roughly \pounds20 to \pounds100, yet several extreme
+outliers push well beyond \pounds200, with one passenger paying \pounds512.33.
+Third-class fares are tightly clustered near zero with very little variance.
+The extreme outliers in first class may distort model training and would
+benefit from a log transformation (\texttt{np.log1p(fare)}) to reduce
+their leverage on learned coefficients.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Chart 6 --- Age vs.\ Fare Scatter (Coloured by Survival)}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{assets/ml_ass3_class_report/chart6_age_fare_scatter.png}
+  \caption{Scatter plot of age against fare, coloured by survival outcome.}
+  \label{fig:scatter}
+\end{figure}
+
+\textbf{Why this chart?} A scatter plot coloured by the target variable is
+used to explore whether any two-dimensional region of the feature space is
+particularly associated with survival or non-survival.
+
+\textbf{What it tells us:} There is no clean linear boundary separating
+survivors from non-survivors in the age--fare space alone. However, a visible
+concentration of survivors occupies the high-fare region, likely corresponding
+to first-class female passengers. The dense mass of non-survivors sits in the
+low-fare region. This confirms that \texttt{fare} has predictive value, but
+it must be combined with other features (particularly \texttt{sex} and
+\texttt{pclass}) to discriminate effectively. The absence of a clear linear
+boundary suggests a non-linear model will outperform a linear one.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Chart 7 --- Correlation Heatmap}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{assets/ml_ass3_class_report/chart7_correlation_heatmap.png}
+  \caption{Pearson correlation matrix for numerical features.}
+  \label{fig:heatmap}
+\end{figure}
+
+\textbf{Why this chart?} A correlation heatmap provides a concise overview
+of linear relationships between all pairs of numerical features and the
+target variable. It helps identify multicollinearity and the most predictive
+numerical features at a glance.
+
+\textbf{What it tells us:}
+\begin{itemize}
+  \item \texttt{pclass} has the strongest correlation with \texttt{survived}
+        ($r = -0.34$) among all numerical features. The negative sign indicates
+        that lower class numbers (i.e., higher class) associate with higher
+        survival probability.
+  \item \texttt{fare} correlates positively with survival ($r = +0.26$),
+        consistent with its close link to passenger class.
+  \item \texttt{pclass} and \texttt{fare} are strongly negatively correlated
+        ($r = -0.55$), which is expected since higher-class tickets cost more.
+        This multicollinearity means both features carry overlapping information.
+        Feature selection or regularisation should address this during modelling.
+  \item \texttt{age} has a weak negative correlation with survival ($r = -0.08$),
+        suggesting age alone is not a strong predictor. It likely interacts
+        meaningfully with sex and class (e.g., prioritisation of children
+        during evacuation).
+  \item \texttt{sibsp} and \texttt{parch} are moderately correlated with each
+        other ($r = +0.41$), motivating the creation of a combined
+        \texttt{family\_size} feature as a preprocessing step.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Chart 8 --- Survival Rate by Port of Embarkation}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.65\textwidth]{assets/ml_ass3_class_report/chart8_survival_by_embarked.png}
+  \caption{Survival rate by port of embarkation.}
+  \label{fig:embarked}
+\end{figure}
+
+\textbf{Why this chart?} Although embarkation port may seem unrelated to
+survival, it serves as a proxy for passenger demographics. Different ports
+attracted different socio-economic profiles of traveller.
+
+\textbf{What it tells us:} Passengers who embarked at Cherbourg (C) had the
+highest survival rate at \textbf{55.4\%}, followed by Queenstown (Q) at
+\textbf{39.0\%} and Southampton (S) at \textbf{33.7\%}. The Cherbourg
+advantage is largely explained by the fact that a disproportionate number of
+wealthy first-class passengers boarded there. This feature may provide
+marginal additional signal for a model, but its predictive contribution is
+largely captured already by \texttt{pclass}.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Conclusion \& Next Steps}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\subsection{Key Findings from EDA}
+
+The exploratory analysis has produced several clear, actionable insights:
+
+\begin{enumerate}
+  \item \textbf{Sex is the dominant predictor.} Female passengers survived
+        at nearly four times the rate of male passengers (74.2\% vs.\ 18.9\%).
+        Any model that ignores this feature will perform poorly.
+
+  \item \textbf{Passenger class is the second strongest predictor.} Survival
+        rate drops from 63.0\% in first class to 24.2\% in third class, a
+        near three-fold difference driven by evacuation priority and physical
+        cabin location on the ship.
+
+  \item \textbf{Fare is correlated with both class and survival} but
+        introduces multicollinearity ($r = -0.55$ with \texttt{pclass}).
+        A log transformation is recommended prior to modelling to reduce
+        the influence of extreme outliers.
+
+  \item \textbf{Age has modest predictive power} on its own. Its interaction
+        with sex (the ``women and children first'' protocol) is likely
+        meaningful, making a derived \texttt{is\_child} flag (age under 16)
+        a worthwhile feature engineering step.
+
+  \item \textbf{Missing data requires preprocessing.} The \texttt{age}
+        column (19.87\% missing) will be imputed with the median. The
+        \texttt{deck} column (77.22\% missing) will be dropped entirely.
+
+  \item \textbf{The dataset is moderately class-imbalanced} (61.6\% vs.\
+        38.4\%). Model evaluation should prioritise F1-score and ROC-AUC
+        over raw accuracy.
+\end{enumerate}
+
+\subsection{Prediction Goal}
+
+The objective is to build a binary classification model that predicts
+whether a given passenger survived the Titanic disaster
+(\texttt{survived} = 1) or did not (\texttt{survived} = 0), based on
+the passenger's demographic and ticketing attributes.
+
+\subsection{Proposed Features for Modelling}
+
+Based on EDA findings, the following features will be used after preprocessing:
+
+\begin{itemize}
+  \item \texttt{pclass} --- ordinal, kept as integer
+  \item \texttt{sex} --- binary encoded (0 = male, 1 = female)
+  \item \texttt{age} --- median-imputed; optionally binned into age groups
+  \item \texttt{sibsp} and \texttt{parch} --- or combined as
+        \texttt{family\_size = sibsp + parch + 1}
+  \item \texttt{fare} --- log-transformed via \texttt{np.log1p(fare)}
+  \item \texttt{embarked} --- one-hot encoded (dropping \texttt{embark\_town})
+\end{itemize}
+
+\subsection{Model Selection}
+
+Two models are proposed based on the EDA findings:
+
+\textbf{1. Random Forest Classifier (primary model).}
+The scatter plot and heatmap both confirm that the decision boundary is
+non-linear and that multiple features interact with one another (e.g., sex
+and class jointly). Random Forest handles non-linearity and feature
+interactions natively, is robust to outliers in \texttt{fare}, requires
+no feature scaling, and provides built-in feature importance scores. As an
+ensemble of decision trees operating via bagging, it reduces variance and
+serves as a strong primary model for this structured tabular classification
+task.
+
+\textbf{2. Logistic Regression (baseline / interpretable model).}
+Logistic Regression will serve as an interpretable baseline. The dominant
+predictor (\texttt{sex}) is essentially binary, and the class boundary is
+partially linear when features are properly encoded. Its coefficients
+directly quantify the log-odds contribution of each feature, which aids in
+reporting and interpretability.
+
+Both models will be evaluated using \textbf{5-fold cross-validation} with
+F1-score and ROC-AUC as the primary metrics, alongside a held-out test
+split (80/20) for final evaluation.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section*{References}
+\addcontentsline{toc}{section}{References}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\begin{thebibliography}{9}
+
+\bibitem{seaborn}
+Waskom, M. L. (2021).
+\textit{seaborn: statistical data visualization}.
+Journal of Open Source Software, 6(60), 3021.
+\url{https://doi.org/10.21105/joss.03021}
+
+\bibitem{encyclopedia_titanic}
+Encyclopaedia Britannica. (2024).
+\textit{Titanic}.
+Retrieved from \url{https://www.britannica.com/topic/Titanic}
+
+\bibitem{kaggle_titanic}
+Kaggle. (2012).
+\textit{Titanic --- Machine Learning from Disaster}.
+Retrieved from \url{https://www.kaggle.com/c/titanic}
+
+\end{thebibliography}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\end{document}
