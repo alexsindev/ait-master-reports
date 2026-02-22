@@ -1,0 +1,376 @@
+%─────────────────────────────────────────────────────────────────────────────%
+%  Alex Sin — Curriculum Vitae / Résumé  2026                                 %
+%─────────────────────────────────────────────────────────────────────────────%
+\documentclass[10pt, a4paper]{article}
+
+% ── Packages ─────────────────────────────────────────────────────────────────
+\usepackage[
+  top    = 0.55in,
+  bottom = 0.55in,
+  left   = 0.65in,
+  right  = 0.65in
+]{geometry}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{parskip}
+\usepackage{multicol}
+\usepackage{fontawesome5}
+\usepackage{booktabs}
+\usepackage{etoolbox}
+
+% ── Colours ──────────────────────────────────────────────────────────────────
+\definecolor{headcolor}{HTML}{0D1B2A}   % near-black navy
+\definecolor{accentblue}{HTML}{1565C0}  % strong blue for links / rule
+\definecolor{rulecol}{HTML}{1565C0}
+\definecolor{muted}{HTML}{555555}
+\definecolor{tagbg}{HTML}{EEF2FF}
+
+% ── Hyperlinks ───────────────────────────────────────────────────────────────
+\hypersetup{
+  colorlinks = true,
+  urlcolor   = accentblue,
+  linkcolor  = accentblue,
+  pdftitle   = {Alex Sin -- Resume 2026},
+  pdfauthor  = {Alex Sin},
+}
+
+% ── Section titles ───────────────────────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{headcolor}\uppercase}
+  {}{0em}{}
+  [\vspace{1pt}{\color{rulecol}\hrule height 0.8pt}\vspace{2pt}]
+
+\titlespacing{\section}{0pt}{10pt}{4pt}
+
+% ── List settings ─────────────────────────────────────────────────────────────
+\setlist[itemize]{
+  leftmargin = 1.1em,
+  itemsep    = 1.2pt,
+  parsep     = 0pt,
+  topsep     = 2pt,
+  label      = {\small\textbullet},
+}
+
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{0pt}
+\pagestyle{empty}
+
+% ── Helpers ───────────────────────────────────────────────────────────────────
+% Job entry header:  \job{Role}{Company}{URL}{Location · Dates}
+\newcommand{\job}[4]{%
+  \noindent
+  \textbf{#1} \enspace\textcolor{muted}{@}\enspace
+  \textbf{\href{#3}{#2}}
+  \hfill {\small\textcolor{muted}{\textit{#4}}}%
+  \par\vspace{1pt}%
+}
+
+% Education entry header
+\newcommand{\edu}[3]{%
+  \noindent\textbf{#1} \hfill {\small\textcolor{muted}{\textit{#2}}}\\
+  \textcolor{muted}{\small #3}\par%
+}
+
+% Project entry
+\newcommand{\project}[3]{%
+  \item \textbf{#1}\enspace{\small\textcolor{muted}{[#2]}}\\
+  #3%
+}
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  HEADER
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{center}
+  {\fontsize{26}{30}\selectfont\bfseries\color{headcolor} Alex Sin}\\[4pt]
+  {\normalsize\color{muted} Senior Software Engineer}\\[6pt]
+  \small
+  \faEnvelope\enspace\href{mailto:alexsin0012@gmail.com}{alexsin0012@gmail.com}
+  \quad\textcolor{muted}{|}\quad
+  \faGithub\enspace\href{https://github.com/alexsindev}{github.com/alexsindev}
+  \quad\textcolor{muted}{|}\quad
+  \faLinkedin\enspace\href{https://www.linkedin.com/in/alexsindev/}{linkedin.com/in/alexsindev}
+\end{center}
+
+\vspace{2pt}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  PROFILE
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Profile}
+
+\noindent
+Engineer with \textbf{5+ years} of production experience across fault-tolerant distributed systems,
+real-time messaging, cloud-native microservices, and IoT protocol stacks.
+Fluent in the full continuum from bare-metal protocols (\textbf{LoRaWAN, BLE, MQTT, UART})
+through to orchestration at scale (\textbf{Kubernetes, AWS, OCI, Huawei Cloud}).
+Primary languages: \textbf{Elixir/Phoenix} and \textbf{Node.js/TypeScript} on the server;
+\textbf{React/Next.js} on the client.
+
+\vspace{2pt}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  TECHNICAL SKILLS
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Technical Skills}
+
+\begin{tabularx}{\textwidth}{@{} >{\bfseries\small}l X @{}}
+  Languages         & Elixir · JavaScript/TypeScript · Rust · PHP · Python · Bash · Java \\[1pt]
+  Backend           & Phoenix · Express · Nest.js · Spring Boot · GraphQL (Absinthe) ·
+                      Socket.io · WebRTC · REST \\[1pt]
+  Frontend          & React · Next.js · Vue · Phoenix LiveView · Apollo Client · Turbo \\[1pt]
+  Cloud \& Infra    & AWS (EC2, S3, ECS, Lambda, DynamoDB, ECR, CodeBuild, CodeDeploy) ·
+                      Oracle OCI (Fn Project) · Huawei Cloud (OBS, SWR) \\[1pt]
+  Data \& Messaging & PostgreSQL · MySQL · MongoDB · DynamoDB · DocumentDB · Redis ·
+                      RabbitMQ · Apache Kafka \\[1pt]
+  DevOps            & Docker · Kubernetes · Nginx · PM2 · Terraform · GitHub Actions · CI/CD \\[1pt]
+  IoT \& Protocols  & LoRaWAN · BLE · MQTT · UART · WebSocket · WebRTC · STUN/TURN \\[1pt]
+  Testing           & ExUnit · Jest · Mox (unit, integration, API, E2E) \\
+\end{tabularx}
+
+\vspace{2pt}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  PROFESSIONAL EXPERIENCE
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Professional Experience}
+
+% ── Cadmus ───────────────────────────────────────────────────────────────────
+\job{Software Engineer}{Cadmus.io}{https://cadmus.io}%
+    {Melbourne, Australia (Remote) · Nov 2024 – Present}
+
+\begin{itemize}
+  \item Designed and shipped \textbf{Elixir/Phoenix} backend services powering
+        authentic assessments for \textbf{60+ higher-education institutions} and
+        \textbf{200k+ student submissions} per semester.
+
+  \item Built and maintained a \textbf{GraphQL API} layer (Absinthe) providing flexible,
+        schema-driven data access, reducing average frontend round-trips by
+        \textasciitilde\textbf{30\%} and eliminating over-fetching on five high-traffic
+        query paths.
+
+  \item Delivered \textbf{React/TypeScript} frontend features integrated with Apollo Client
+        and the Turbo build system; targeted code-splitting reduced initial bundle size
+        by \textbf{18\%}, improving LCP by \textasciitilde\textbf{400 ms} on reference hardware.
+
+  \item Owned \textbf{8+ major features} end-to-end (from product design through deployment)
+        within the first six months; zero post-release P1 incidents.
+
+  \item Instituted structured code-review practices that halved review cycle time and
+        became the team standard for asynchronous distributed collaboration.
+\end{itemize}
+
+\vspace{5pt}
+
+% ── Viatick ──────────────────────────────────────────────────────────────────
+\job{Full-Stack Engineer}{Viatick Pte.\ Ltd}{https://viatick.com}%
+    {Singapore (Remote) · Jul 2023 – Oct 2024}
+
+\begin{itemize}
+  \item Engineered \textbf{Oracle Cloud Infrastructure (OCI) serverless microservices}
+        (Node.js/TypeScript, Fn Project) powering the Jarvis IoT platform, processing
+        telemetry from \textbf{10,000+ connected field devices} across Southeast Asia
+        at \textbf{99.9\% monthly uptime}.
+
+  \item Built a geolocation pipeline that parsed \textbf{H.264/MP4 body-cam metadata}
+        to extract GPS tracks with \textbf{sub-100 ms} query latency, enabling
+        real-time asset tracking for enterprise security clients.
+
+  \item Profiled and optimised critical MySQL/Sequelize query paths, achieving a
+        \textbf{55\% reduction in P95 latency} on the five hottest ORM endpoints.
+
+  \item Integrated ESLint static analysis into CI, eliminating type-safety regressions
+        across \textbf{12 independent microservice} repositories.
+
+  \item Contributed React.js/Next.js frontend features, adding geospatial map overlays
+        and live device-status dashboards consumed by \textbf{500+ enterprise users}.
+\end{itemize}
+
+\vspace{5pt}
+
+% ── BIT Co. ──────────────────────────────────────────────────────────────────
+\job{Backend Engineer}{BIT Co.\ Ltd}{https://bit.com.mm}%
+    {Yangon, Myanmar (Hybrid) · Jan 2023 – Jul 2023}
+
+\begin{itemize}
+  \item Led backend development of \textbf{ATalk}, a production WebSocket messaging
+        platform for a leading private bank, sustaining \textbf{5,000+ concurrent
+        connections} with \textbf{< 50 ms} median message latency.
+
+  \item Built a WebRTC signaling server (Socket.io + STUN/TURN) supporting real-time
+        video/audio calls for \textbf{10k+ daily active users}, with NAT traversal
+        handled entirely server-side.
+
+  \item Architected \textbf{fault-tolerant, self-healing microservices} (PM2 + Docker +
+        RabbitMQ), achieving \textbf{99.95\% uptime} over a continuous 6-month deployment.
+
+  \item Developed a file-management service on \textbf{AWS S3 + Huawei OBS} using
+        parallelised multipart uploads and pre-signed URLs, yielding a
+        \textbf{3x throughput gain} over sequential transfer at equivalent file sizes.
+
+  \item Designed and launched a push notification service (Firebase SDK + Pushy)
+        dispatching \textbf{1M+ notifications/month} with \textbf{< 200 ms} median delivery
+        latency and 98.7\% successful delivery rate.
+
+  \item Co-orchestrated Kubernetes workloads across \textbf{AWS ECR} and \textbf{Huawei SWR},
+        managing rolling deployments for 12 microservices with zero-downtime release cycles.
+
+  \item Implemented a Redis caching layer reducing database read pressure by \textbf{40\%}
+        on the highest-traffic messaging and presence endpoints.
+\end{itemize}
+
+\vspace{5pt}
+
+% ── Biziolab ─────────────────────────────────────────────────────────────────
+\job{Software Engineer}{Biziolab Pte.\ Ltd}{https://biziolab.com}%
+    {Singapore (Remote) · Apr 2021 – Dec 2022}
+
+\begin{itemize}
+  \item Built real-time \textbf{Elixir/Phoenix} microservices for Singapore LTA's
+        \href{https://www.lta.gov.sg}{\textbf{Passenger Information Display System (PIDS)}},
+        now live at \textbf{200+ bus stops} island-wide, serving millions of
+        daily commuters with sub-second bus arrival updates.
+
+  \item Implemented Phoenix Channels WebSocket services for MCU sensor data ingestion,
+        enforcing fault tolerance via \textbf{GenServer + Supervisor} OTP trees with
+        automatic process restart and zero data loss under node failure.
+
+  \item Engineered a standalone Elixir monitoring agent (via \textbf{Elixir Ports}) for
+        real-time health checks and remote restart of Windows background services,
+        enabling \textbf{zero-downtime remote recovery} from LTA's central control room.
+
+  \item Applied \textbf{Task Supervisors + Flow} for concurrent batch processing of
+        telemetry streams, achieving \textbf{4x throughput} improvement over baseline
+        sequential handling at peak ingestion load.
+
+  \item Attained \textbf{> 75\% unit-test coverage} (ExUnit + Mox); automated
+        CI/CD pipeline (GitHub Actions, CodeBuild, CodeDeploy, ECS) compressed
+        release cycles from \textbf{2 days to under 30 minutes}.
+
+  \item Mentored \textbf{2 on-job trainees}, conducting weekly code reviews, pair
+        programming sessions, and structured task assignments aligned with
+        production delivery milestones.
+\end{itemize}
+
+\vspace{2pt}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  EDUCATION
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Education}
+
+% ── AIT ──────────────────────────────────────────────────────────────────────
+\noindent
+\textbf{M.Sc.\ in Computer Science}
+\hfill {\small\textcolor{muted}{\textit{Aug 2025 – Aug 2027 (expected)}}}\\
+\href{https://www.ait.ac.th}{Asian Institute of Technology}, Thailand
+\hfill {\small\textbf{CGPA: 3.5 / 4.0}}\\[2pt]
+{\small\textcolor{muted}{
+  Theory of Computation · Full-Stack Application Development ·
+  Computer Networks · Data Modeling \& Management\\
+ Algorithms · Programming Languages \& Compilers ·
+  Data Engineering \& MLOps · Machine Learning ·
+  Business of Frontier Technologies
+}}
+
+\vspace{6pt}
+
+% Graduate Projects
+\noindent\textit{\textbf{\small Graduate Projects:}}
+\begin{itemize}[topsep=3pt]
+
+  \project%
+    {MLOps: Kafka Data Ingestion \& ETL Pipeline on AWS Cloud}%
+    {Data Engineering \& MLOps, Sem 2}%
+    {Streaming data pipeline using Apache Kafka, AWS Glue, S3, and Athena for high-throughput event ingestion and ETL with Terraform-provisioned infrastructure.}
+
+  \project%
+    {Algorithm Analysis: Graph-Based Route Optimization for Multi-Day Tourism Itinerary Planning}%
+    {Algorithm Design and Data Structures, Sem 2}%
+    {Comparative study and implementation of Greedy and Simulated Annealing Algorithm approaches for NP-hard multi-day itinerary optimization.}
+
+  \project%
+    {Machine Learning: Gamma-Ray Event Classification}%
+    {Machine Learning, Sem 2}%
+    {Binary classification of gamma-ray vs.\ hadronic events from the MAGIC telescope dataset using Random Forest, XGBoost, and SVM; achieved 91.4\% accuracy and AUC-ROC of 0.963.}
+
+\end{itemize}
+
+\vspace{6pt}
+
+% ── Greenwich ────────────────────────────────────────────────────────────────
+\noindent
+\textbf{B.Sc.\ (Hons) in Computing}
+\hfill {\small\textcolor{muted}{\textit{Dec 2022 – Dec 2023}}}\\
+\href{https://www.gre.ac.uk}{University of Greenwich}, UK
+\hfill {\small\textbf{First Class Honours}}\\
+{\small\textcolor{muted}{
+  Human-Computer Interaction \& Design · Requirements Management ·
+  Enterprise Web Software Development · Mobile Design \& Development
+}}\\[2pt]
+\noindent\textit{\textbf{\small Undergraduate Project:}}
+\begin{itemize}[topsep=3pt]
+
+    \project%
+    {Web-based Parcel-Delivery Management Platform}%
+    {Final-year Project, Sem1 + Sem2}%
+    {Development of a web-based parcel-delivery management platform using
+    MERN stack with RBAC}
+
+\end{itemize}
+
+\vspace{5pt}
+
+% ── SQA ──────────────────────────────────────────────────────────────────────
+\noindent
+\textbf{Advanced Diploma in Computing} {\small(SCQF Level 8)}
+\hfill {\small\textcolor{muted}{\textit{Oct 2019 – Sep 2022}}}\\
+\href{https://www.sqa.org.uk}{Scottish Qualifications Authority}, UK\\
+{\small\textcolor{muted}{
+  Computer Systems Fundamentals · Convergence Technologies · Digital Forensics ·
+  Mathematics for Computing · Routing \& Switching Technology ·
+  Server Administration · Professionalism \& Ethics in Computing
+}}
+
+\vspace{5pt}
+
+% ── SPM ──────────────────────────────────────────────────────────────────────
+\noindent
+\textbf{Malaysian Certificate of Education (SPM / O-Level equivalent)}
+\hfill {\small\textcolor{muted}{\textit{Jan 2018 – Apr 2019}}}\\
+Acmar International School, Malaysia
+\hfill {\small\textbf{Straight A's (6A+, 2A, 1A-)}}
+
+\vspace{2pt}
+
+% ══════════════════════════════════════════════════════════════════════════════
+%  CERTIFICATIONS
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Certifications}
+
+\noindent
+\textbf{AWS Certified Developer – Associate}
+\hfill {\small\textcolor{muted}{\textit{Issued Nov 2022 · Renewal in progress}}}\\
+{\small Credential: \href{https://www.credly.com/badges}{Credly Badge}}
+
+\vspace{4pt}
+
+\noindent
+\textbf{IELTS Academic – Band 8.0}
+\hfill {\small\textcolor{muted}{\textit{Issued Mar 2025}}}\\
+{\small British Council · Credential ID: 24TH521558TK001A}
+
+\vspace{6pt}
+
+\end{document}
